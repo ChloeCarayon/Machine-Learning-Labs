@@ -4,12 +4,11 @@ import matplotlib.pyplot as plt
 from sklearn import linear_model
 
 
-def preprocessingData(file):
-    data = pd.read_excel(file)
-    X = np.asmatrix(data.iloc[:, :-1])
+def preprocessingData(df):
+    X = np.asmatrix(df.iloc[:, :-1])
     m, n = X.shape
     X = np.insert(X, 0, 1, axis=1)
-    y = np.asmatrix(data.iloc[:, -1:])
+    y = np.asmatrix(df.iloc[:, -1:])
     w = np.array([[1] for i in range(n + 1)])
 
     normalizeFeatures(X, n)
@@ -28,10 +27,10 @@ def costFunction(X, y, w, m):
     return float(1 / (2 * m) * (X * w - y).T * (X * w - y))
 
 
-def gradientDescent(file, alpha=0.03, threshold=1e-3, iter=1000):
-    X, y, w, m, n = preprocessingData(file)
+def gradientDescent(df, alpha=0.03, threshold=1e-3, iter=1000, autoAlpha=True):
+    X, y, w, m, n = preprocessingData(df)
 
-    J = []
+    J = [costFunction(X, y, w, m)]
     i = 0
     while True:
         J.append(costFunction(X, y, w, m))
@@ -39,10 +38,13 @@ def gradientDescent(file, alpha=0.03, threshold=1e-3, iter=1000):
         w = w - alpha * delta
         i += 1
 
+        if autoAlpha and J[-1] > J[-2]:
+            alpha /= 1.1
+
         if (abs(costFunction(X, y, w, m) - J[-1]) < threshold) or (i == iter):
             break
 
-    print("\nBuild regression")
+    print("\nGradient descent")
     print("Coefficients:\n", w)
     print(abs(costFunction(X, y, w, m) - J[-1]))
     print("MAE:", meanAbsoluteError(X, y, w, m))
@@ -50,13 +52,19 @@ def gradientDescent(file, alpha=0.03, threshold=1e-3, iter=1000):
     print("R2:", r2(X, y, w, m))
 
     print("\nNormal equation:")
-    print(normalEquation(X, y))
+    w_norm = normalEquation(X, y)
+    print(w_norm)
+    print("MAE:", meanAbsoluteError(X, y, w_norm, m))
+    print("RMSE:", rootMeanSquaredError(X, y, w_norm, m))
+    print("R2:", r2(X, y, w_norm, m))
 
     plt.plot(np.log(J))
     plt.title("Value of the cost function over iterations")
     plt.xlabel("iteration")
     plt.ylabel("log of cost function value")
     plt.show()
+
+    return w_norm
 
 
 def meanAbsoluteError(X, y, w, m):
@@ -74,17 +82,17 @@ def r2(X, y, w, m):
 def normalEquation(X, y):
     return (X.T * X)**-1 * X.T * y
 
+# data = pd.read_excel("../data/CCPP.xlsx")
+# gradientDescent(data, alpha=0.9)
 
-gradientDescent("../data/CCPP.xlsx", alpha=0.9)
-
-X, y, w, m, n = preprocessingData("../data/CCPP.xlsx")
-print("Scikit-learn")
-reg = linear_model.LinearRegression()
-reg.fit(X, y)
-s = reg.coef_
-s[0, 0] = reg.intercept_
-s = s.T
-print(s)
-print("MAE:", meanAbsoluteError(X, y, s, m))
-print("RMSE:", rootMeanSquaredError(X, y, s, m))
-print("R2:", r2(X, y, s, m))
+# X, y, w, m, n = preprocessingData(data)
+# print("Scikit-learn")
+# reg = linear_model.LinearRegression()
+# reg.fit(X, y)
+# s = reg.coef_
+# s[0, 0] = reg.intercept_
+# s = s.T
+# print(s)
+# print("MAE:", meanAbsoluteError(X, y, s, m))
+# print("RMSE:", rootMeanSquaredError(X, y, s, m))
+# print("R2:", r2(X, y, s, m))
