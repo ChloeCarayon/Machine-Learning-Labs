@@ -1,15 +1,15 @@
-# Machine Learning TP
+# Machine Learning Labs
 
-## TP1: Linear regression from scratch
-
-
-
-## TP2
+## Lab1: Linear regression from scratch
 
 
 
-## TP3
+## Lab2: Bike rental
 
 
 
-## TP4
+## Lab3
+
+
+
+## Lab4
