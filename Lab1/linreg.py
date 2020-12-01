@@ -17,7 +17,6 @@ class LinearRegression:
         self.X_test = self.normalizeFeatures(X_test)
         self.y_train = np.asmatrix(y_train)
         self.y_test = np.asmatrix(y_test)
-        self.w = np.asmatrix([[1] for i in range(self.n + 1)])
 
     def normalizeFeatures(self, X, fit=False):
         if fit:
@@ -35,6 +34,7 @@ class LinearRegression:
     def gradientDescent(self, alpha=0.03, threshold=1e-3, iter=1000, autoAlpha=True):
         i = 0
         self.J = []
+        self.w = np.asmatrix([[1] for i in range(self.n + 1)])
 
         while True:
             i += 1
