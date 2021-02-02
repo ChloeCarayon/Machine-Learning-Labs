@@ -16,7 +16,8 @@ class Regression:
 
     def normalizeFeatures(self, X, fit=False):
         if fit:
-            self.scaling = list(zip(X.min(), X.max()))
+            scaling = list(zip(X.min(), X.max()))
+            self.scaling = list(map(lambda x: (0, 1) if x[0] == x[1] else (x[0], x[1]), scaling))
 
         minmax = list(zip(*self.scaling))
         min, max = np.array(minmax[0]), np.array(minmax[1])
@@ -120,7 +121,7 @@ class LogisticRegression(Regression):
         return np.matrix([[TN, FP], [FN, TP]])
 
     def accuracy(self, X, y):
-        return (y == self.predict(X)).mean()
+        return (self.predict(X) == y).mean()
 
     def precision(self, X, y):
         matrix = self.confusion(X, y)

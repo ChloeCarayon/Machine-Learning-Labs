@@ -11,7 +11,7 @@ def linear():
     df = pd.read_excel("Lab1/data/CCPP.xlsx")
 
     X = df.iloc[:, :-1]
-    y = df.iloc[:, -1:]
+    y = df.iloc[:, -1]
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
     scaler = MinMaxScaler()
@@ -29,7 +29,7 @@ def linear():
     print("Train:", r2_score(y_train, reg.predict(X_train)))
     print("Test:", r2_score(y_test, reg.predict(X_test)))
 
-    print("\nregression")
+    print("\nRegression")
     model = LinearRegression(df)
     model.gradientDescent(alpha=1, iter=1e4, threshold=1e-6)
     print(model.w)
@@ -59,7 +59,7 @@ def logistic():
     df2.replace(["N", "Y"], [0, 1], inplace=True)
 
     X = df2.iloc[:, :-1]
-    y = df2.iloc[:, -1:]
+    y = df2.iloc[:, -1]
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
     scaler = MinMaxScaler()
@@ -78,7 +78,7 @@ def logistic():
     print("Recall:", recall_score(y_train, reg.predict(X_train)))
     print("f1:", f1_score(y_train, reg.predict(X_train)))
 
-    print("\nregression")
+    print("\nRegression")
     model = LogisticRegression(df2, random_state=0)
     model.gradientDescent(alpha=0.003, threshold=1e-9, iter=1e4)
     print(model.w)
@@ -92,5 +92,5 @@ def logistic():
     model.plotCost()
 
 
-# linear()
+linear()
 logistic()
